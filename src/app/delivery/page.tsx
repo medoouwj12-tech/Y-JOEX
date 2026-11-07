@@ -1,0 +1,1 @@
+export default function Delivery(){return <main className="info-page"><span className="eyebrow">Y JOEX / GETTING IT TO YOU</span><h1>DELIVERY<span>.</span></h1><p>Delivery fees are confirmed by governorate at checkout. Our team will confirm availability and timing with you over WhatsApp after you place your order.</p></main>}

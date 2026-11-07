@@ -1,0 +1,1 @@
+import Link from 'next/link';export default function NotFound(){return <main className="info-page not-found"><span className="eyebrow">Y JOEX / 404</span><h1>NOT THIS WAY<span>.</span></h1><p>The page you’re looking for has moved or doesn’t exist.</p><Link href="/" className="button red">BACK TO THE DROP ↗</Link></main>}

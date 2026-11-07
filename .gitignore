@@ -1,0 +1,11 @@
+node_modules/
+.next/
+out/
+build/
+.vercel/
+/*.jpg
+/*.jpeg
+.env*
+!.env.example
+npm-debug.log*
+tsconfig.tsbuildinfo
