@@ -36,4 +36,6 @@ Neon and Vercel integrations can also create preview database branches; make sur
 
 ## Current admin scope
 
-The admin route has password sign in, Neon backed order listing, status updates, and WhatsApp contact links. Product CRUD, hosted image uploads, editable site settings and shipping fee editing are not yet implemented; products are currently maintained in code and the SQL seed. Neon provides the database, not file storage, so use a hosted image service or keep optimized static files in `public/images`.
+Open `/admin` and sign in with the configured admin credentials. The Products section reads and edits the Neon catalog. It supports creating products, English and Arabic names/descriptions, category, gender, collection, price and compare-at price, colors, sizes, stock per color and size, featured/active visibility, and up to eight product photos. Uploads are resized and compressed to WebP in the browser and stored with the product in Neon; HTTPS image URLs and existing `/images/...` assets are also supported. The first image is the main image, and the editor lets you reorder or remove photos.
+
+Changes appear in the storefront catalog and product pages after saving. Order listing and status updates remain in the Orders section. Shipping fees and announcement settings still live in Neon and are not editable from the current admin UI.
