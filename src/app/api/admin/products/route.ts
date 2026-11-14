@@ -58,7 +58,7 @@ function normalize(body:any){
 }
 
 export async function GET(request:NextRequest){
-  if(!isAdminRequest(request))return NextResponse.json({error:'Unauthorized'},{status:401});
+  if(!await isAdminRequest(request))return NextResponse.json({error:'Unauthorized'},{status:401});
   try{
     const sql=getDb();
     const id=request.nextUrl.searchParams.get('id');
@@ -76,7 +76,7 @@ export async function GET(request:NextRequest){
 }
 
 export async function POST(request:NextRequest){
-  if(!isAdminRequest(request))return NextResponse.json({error:'Unauthorized'},{status:401});
+  if(!await isAdminRequest(request))return NextResponse.json({error:'Unauthorized'},{status:401});
   try{
     const p=normalize(await request.json());
     const sql=getDb();
@@ -91,7 +91,7 @@ export async function POST(request:NextRequest){
 }
 
 export async function PATCH(request:NextRequest){
-  if(!isAdminRequest(request))return NextResponse.json({error:'Unauthorized'},{status:401});
+  if(!await isAdminRequest(request))return NextResponse.json({error:'Unauthorized'},{status:401});
   try{
     const body=await request.json();
     const id=String(body?.id||'').trim();

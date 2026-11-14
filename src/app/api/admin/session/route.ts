@@ -1,5 +1,30 @@
 import {NextRequest,NextResponse} from 'next/server';
-import {adminCookieName,isAdminRequest,makeAdminToken} from '@/lib/admin-auth';
-export async function GET(request:NextRequest){return NextResponse.json({authenticated:isAdminRequest(request)})}
-export async function POST(request:NextRequest){try{const{email,password}=await request.json();if(!process.env.ADMIN_EMAIL||!process.env.ADMIN_PASSWORD||!process.env.ADMIN_SESSION_SECRET)return NextResponse.json({error:'Admin credentials are not configured.'},{status:503});if(email!==process.env.ADMIN_EMAIL||password!==process.env.ADMIN_PASSWORD)return NextResponse.json({error:'Email or password is incorrect.'},{status:401});const response=NextResponse.json({authenticated:true});response.cookies.set(adminCookieName,makeAdminToken(email),{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:7*24*60*60});return response}catch{return NextResponse.json({error:'Could not sign in.'},{status:400})}}
-export async function DELETE(){const response=NextResponse.json({authenticated:false});response.cookies.set(adminCookieName,'',{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:0});return response}
+import {adminCookieName,authenticateAdmin,isAdminRequest,makeAdminToken} from '@/lib/admin-auth';
+
+function sessionCookie(response:NextResponse,username:string,version:number){
+  response.cookies.set(adminCookieName,makeAdminToken(username,version),{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:7*24*60*60});
+}
+
+export async function GET(request:NextRequest){return NextResponse.json({authenticated:await isAdminRequest(request)})}
+
+export async function POST(request:NextRequest){
+  try{
+    if(!process.env.ADMIN_SESSION_SECRET)return NextResponse.json({error:'إعداد جلسة الإدارة غير مكتمل.'},{status:503});
+    const body=await request.json(),username=String(body?.username??body?.email??'').trim(),password=String(body?.password??'');
+    if(!username||!password)return NextResponse.json({error:'اكتب اسم المستخدم وكلمة السر.'},{status:400});
+    const credentials=await authenticateAdmin(username,password);
+    if(!credentials)return NextResponse.json({error:'اسم المستخدم أو كلمة السر غير صحيحة.'},{status:401});
+    const response=NextResponse.json({authenticated:true});
+    sessionCookie(response,credentials.username,credentials.version);
+    return response;
+  }catch(error){
+    console.error('Unable to sign in to admin',error);
+    return NextResponse.json({error:'تعذر تسجيل الدخول. تأكد من إعداد قاعدة البيانات.'},{status:503});
+  }
+}
+
+export async function DELETE(){
+  const response=NextResponse.json({authenticated:false});
+  response.cookies.set(adminCookieName,'',{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:0});
+  return response;
+}

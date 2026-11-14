@@ -15,7 +15,7 @@ Use `npm run typecheck` and `npm run build` before deployment.
 
 Create a Neon project and copy its pooled connection string into `DATABASE_URL`. Keep this value private; it is server-only and must not use the `NEXT_PUBLIC_` prefix. Run `neon/schema.sql` against the production branch. It creates products, orders, shipping fees and site settings, and seeds the 12 preview products plus sample shipping fees.
 
-Order checkout verifies the submitted product variants against Neon, calculates subtotal and delivery from database prices, saves the order, then opens WhatsApp with the saved order summary. The current admin login uses `ADMIN_EMAIL`, `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`. Use a unique long password and at least 32 random characters for the session secret.
+Order checkout verifies the submitted product variants against Neon, calculates subtotal and delivery from database prices, saves the order, then opens WhatsApp with the saved order summary. The first admin login uses `ADMIN_USERNAME` (or the existing `ADMIN_EMAIL` value), `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`. After the first successful login, the username and a scrypt password hash are stored in Neon. Change the username and password from Admin → Settings; the session secret remains an environment variable and should be at least 32 random characters.
 
 ## GitHub and Vercel
 
